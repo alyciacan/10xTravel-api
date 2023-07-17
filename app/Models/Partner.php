@@ -11,4 +11,13 @@ class Partner extends Model
 
     protected $table = 'partners';
 
+    public function sourceProgram()
+    {
+        return $this->belongsTo(TransferProgram::class, 'source_program_id');
+    }
+
+    public function destinationProgram()
+    {
+        return $this->belongsTo(TransferProgram::class, 'destination_program_id');
+    }
 }
