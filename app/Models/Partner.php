@@ -13,11 +13,11 @@ class Partner extends Model
 
     public function sourceProgram()
     {
-        return $this->belongsTo(TransferProgram::class, 'source_program_id');
+        return $this->belongsTo(Program::class, 'source_program_id');
     }
 
     public function destinationProgram()
     {
-        return $this->belongsTo(TransferProgram::class, 'destination_program_id');
+        return $this->belongsTo(Program::class, 'destination_program_id');
     }
 }
