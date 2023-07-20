@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Partner;
+use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Pagination\Paginator;
 
 
 class PartnerController extends Controller
 {
     /**
      * Display all non-expired transfer partner rates
-     *
+     * api/partners?page=1
      * @return \Illuminate\Http\Response
      */
     public function index()
@@ -35,9 +37,9 @@ class PartnerController extends Controller
                 $query->where('bonus_rate', '=', 0)
                     ->orWhere('bonus_expiration', '>=', $currentDateTime);
             })
-            ->get();
+            ->paginate(25);
 
-        return $transferPartners;
+        return response()->json($transferPartners, 200);
     }
 
     /**
@@ -56,6 +58,7 @@ class PartnerController extends Controller
      * Search for partners by source program id, returns all rates and info for all current offers
      *
      * @param  \App\Models\Partner  $partner
+     * api//partners/search/{id}?page=1
      * @return \Illuminate\Http\Response
      */
     public function search($id)
@@ -80,9 +83,9 @@ class PartnerController extends Controller
                 $query->where('bonus_rate', '=', 0)
                     ->orWhere('bonus_expiration', '>=', $currentDateTime);
             })
-            ->get();
+            ->paginate(25);
 
-        return $relevantPartners;
+        return response()->json($relevantPartners, 200);
     }
 
     /**
@@ -95,7 +98,7 @@ class PartnerController extends Controller
     public function update(Request $request, Partner $partner)
     {
         $partner->update($request->all());
-        return response()->json($partner);
+        return response()->json($partner, 201);
     }
 
     /**
@@ -133,10 +136,10 @@ class PartnerController extends Controller
             })
             ->get();
 
-        return $relevantPartners;
+        return response->json($relevantPartners, 200);
     }
 
-        /**
+    /**
      * Return transfer rate and time given a source program ID and a destination program ID
      *
      * @return \Illuminate\Http\Response
@@ -147,8 +150,16 @@ class PartnerController extends Controller
         $source_program_id = $request->query('source');
         $destination_program_id = $request->query('destination');
 
+        // Check if the source and destination programs exist
+        if (!Program::where('id', $source_program_id)->exists() || !Program::where('id', $destination_program_id)->exists()) {
+            return response()->json(['error' => 'Invalid source or destination program ID.'], 404);
+        }
+
         $transferDetails = Partner::join('programs as source_program', 'partners.source_program_id', '=', 'source_program.id')
-            ->join('programs as destination_program', 'partners.destination_program_id', '=', 'destination_program_id')
+            ->join('programs as destination_program', function ($join) use ($destination_program_id) {
+                $join->on('partners.destination_program_id', '=', 'destination_program.id')
+                    ->where('destination_program.id', '=', $destination_program_id);
+            })
             ->select(
                 'partners.transfer_rate',
                 'partners.transfer_time',
@@ -157,9 +168,15 @@ class PartnerController extends Controller
                 'destination_program.name as destination_program_name'
             )
             ->where('partners.source_program_id', '=', $source_program_id)
-            ->where('partners.destination_program_id', '=', $destination_program_id)
+            ->where(function ($query) {
+                $query->where('partners.bonus_rate', '=', 0) // Reg rates
+                    ->orWhere(function ($subquery) {
+                        $subquery->where('partners.bonus_rate', '=', 1) // Bonus rates
+                            ->where('partners.bonus_expiration', '>', now()); // Not expired
+                    });
+            })
             ->get();
 
-            return $transferDetails;
+        return response()->json($transferDetails, 200);
     }
 }

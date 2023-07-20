@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Program;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
+
 
 class ProgramController extends Controller
 {
@@ -12,10 +14,9 @@ class ProgramController extends Controller
      */
     public function index()
     {
-        $programs = Program::all();
+        $programs = Program::paginate(25);
 
-        return $programs;
-
+        return response()->json($programs, 200);
 
     }
 
