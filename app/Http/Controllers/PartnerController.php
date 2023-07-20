@@ -78,6 +78,7 @@ class PartnerController extends Controller
                 'partners.transfer_time_units',
                 'bonus_rate',
                 'bonus_expiration',
+                'partners.id'
             )
             ->where(function ($query) use ($currentDateTime) {
                 $query->where('bonus_rate', '=', 0)
