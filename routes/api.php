@@ -18,6 +18,7 @@ Route::get('/partners/search/{id}', [PartnerController::class, 'search']);
 Route::get('/partners/{id}', [PartnerController::class, 'show']);
 Route::get('/transfer', [PartnerController::class, 'getTransferRateAndTime']);
 Route::get('/programs', [ProgramController::class, 'index']);
+Route::get('/programoptions', [ProgramController::class, 'showOptions']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

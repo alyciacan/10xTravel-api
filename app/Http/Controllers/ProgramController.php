@@ -20,6 +20,16 @@ class ProgramController extends Controller
 
     }
 
+    // Display only unique program names and ids
+
+    public function showOptions()
+    {
+        $programOptions = Program::select('name', 'id')->distinct()->get();
+
+        return response()->json($programOptions);
+
+    }
+
     /**
      * Store a newly created resource in storage.
      */

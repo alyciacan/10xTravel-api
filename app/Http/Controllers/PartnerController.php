@@ -136,7 +136,7 @@ class PartnerController extends Controller
             })
             ->get();
 
-        return response->json($relevantPartners, 200);
+        return response()->json($relevantPartners, 200);
     }
 
     /**
