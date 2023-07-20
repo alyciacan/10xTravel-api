@@ -26,7 +26,9 @@ class ProgramController extends Controller
     {
         $programOptions = Program::select('name', 'id')->distinct()->get();
 
-        return response()->json($programOptions);
+        $sorted = $programOptions->sortBy('name');
+
+        return response()->json($sorted);
 
     }
 
