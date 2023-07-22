@@ -13,7 +13,6 @@
     <img src="https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white"/>
     </div>
 
-## REST API for the 10xTravel Points Transfer Tool         
 ### Introduction     
 The 10xTravel Points Transfer Tool is an interactive web app that allows players of "the points game" (IYKYK) to quickly and easily see how much their hard-earned credit card points are worth when transferring to partner programs. The tool shows users which reward programs partner with any given program, bonus and regular transfer rates, and allows users to quickly and easily calculate how much "bang" they can get for their buck. 
 
@@ -58,10 +57,14 @@ You can now access the server at http://localhost:8000
 <img src="https://github.com/scottdgaines/fitlit/assets/105533317/f4f11616-4eb1-4077-b09c-e3e4e7095a8f" alt="table schema" width="500"/>
 </div>
 
+### Deployment
+Deployed URL: https://alycia-10xtravel-3723508a6055.herokuapp.com/
+
 ### Technologies/Resources Used
 * PHP and Laravel    
 * MySQL    
-* Postman   
+* Postman
+* Heroku    
 * ChatGPT     
 * Shout out to [Traversy Media](https://www.traversymedia.com/) for the amazing tutorials     
 
